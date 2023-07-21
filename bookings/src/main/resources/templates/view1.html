@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View 1</title>
+  </head>
+  <body>
+    <h1>Search Our Accomodations</h1>
+    <form action="/search" method="get" data-th-object="${searchInput}">
+      <table>
+        <tr>
+          <td>Country:</td>
+          <td>
+            <select name="country" >
+              <option
+              data-th-each="country : ${countryList}"  
+              data-th-text="${country}"
+                data-th-value="${country}"
+                data-th-field="${searchInput.country}"
+              ></option>
+            </select>
+            <span
+            class="error"
+            data-th-if="${#fields.hasErrors('country')}"
+            data-th-errors="${searchInput.country}"
+            style="color: red;"
+          ></span>
+          </td>
+        </tr>
+        <tr>
+          <td>Number of persons:</td>
+          <td>
+            <input type="number" name="pax" value="1" data-th-field="${searchInput.pax}"/>
+            <span
+            class="error"
+            data-th-if="${#fields.hasErrors('pax')}"
+            data-th-errors="${searchInput.pax}"
+            style="color: red;"
+          ></span>
+          </td>
+        </tr>
+        <tr>
+            <td>Price Range:</td>
+            <td>
+                <span>Min</span>
+                <input type="number" name="min" value="1.0" data-th-field="${searchInput.min}">
+                <span>Max</span>
+                <input type="number" name="max" value="1.0" data-th-field="${searchInput.max}">
+            </td>
+            <td>
+                <span
+                class="error"
+                data-th-if="${#fields.hasErrors('min')}"
+                data-th-errors="${searchInput.min}"
+                style="color: red;"
+              ></span>
+              <span
+              class="error"
+              data-th-if="${#fields.hasErrors('max')}"
+              data-th-errors="${searchInput.max}"
+              style="color: red;"
+            ></span>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit"></button>
+            </td>
+        </tr>
+      </table>
+    </form>
+  </body>
+</html>
