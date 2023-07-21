@@ -1,0 +1,1 @@
+mongoimport --uri mongodb+srv://user:Password@cluster0.dgudwrr.mongodb.net/ -d bnb -c listings --type=json listings.json

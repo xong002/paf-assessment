@@ -22,7 +22,8 @@ public class BookingsApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		// List<Document> result = repo.getListingsByInput(new SearchInput("australia", 2, 100f, 100f));
-		repo.getListingDetails("27498126");
+		// repo.getListingDetails("27498126");
+		System.out.println(repo.findVacancyById("10006546"));
 		// for(Document s : result){
 		// 	System.out.println(s.toString());
 		// }

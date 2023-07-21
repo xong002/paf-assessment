@@ -7,9 +7,11 @@ import java.util.Optional;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import vttp2023.batch3.assessment.paf.bookings.models.Details;
 import vttp2023.batch3.assessment.paf.bookings.models.Listing;
+import vttp2023.batch3.assessment.paf.bookings.models.Reservation;
 import vttp2023.batch3.assessment.paf.bookings.models.SearchInput;
 import vttp2023.batch3.assessment.paf.bookings.repositories.ListingsRepository;
 
@@ -19,21 +21,21 @@ public class ListingsService {
 	@Autowired
 	private ListingsRepository repo;
 
-	//TODO: Task 2
-	public List<String> getCountryList(){
+	// TODO: Task 2
+	public List<String> getCountryList() {
 		return repo.getCountryList();
 	}
-	
-	//TODO: Task 3
-	public List<Listing> getListingsByInput(SearchInput input){
+
+	// TODO: Task 3
+	public List<Listing> getListingsByInput(SearchInput input) {
 		List<Document> docList = repo.getListingsByInput(input);
 		List<Listing> listings = new ArrayList<>();
-		for(Document d : docList){
+		for (Document d : docList) {
 			Listing l = new Listing();
 			l.setId(d.getString("_id"));
 			l.setName(d.getString("name"));
 			l.setPrice(d.getDouble("price"));
-			l.setImage(d.get("images",Document.class).getString("picture_url"));
+			l.setImage(d.get("images", Document.class).getString("picture_url"));
 			l.setAddress(d.get("address", Document.class).getString("street"));
 			listings.add(l);
 		}
@@ -41,10 +43,11 @@ public class ListingsService {
 
 	}
 
-	//TODO: Task 4
-	public Optional<Details> getDetailsById(String id){
+	// TODO: Task 4
+	public Optional<Details> getDetailsById(String id) {
 		List<Document> docList = repo.getListingDetails(id);
-		if(docList.isEmpty()) return Optional.empty();
+		if (docList.isEmpty())
+			return Optional.empty();
 		Document d = docList.get(0);
 		Details details = new Details();
 		details.setId(d.getString("_id"));
@@ -57,9 +60,24 @@ public class ListingsService {
 		details.setAmenities(d.getString("amenities"));
 		return Optional.ofNullable(details);
 	}
-	
 
-	//TODO: Task 5
+	// TODO: Task 5
+	@Transactional
+	public Optional<String> createReservation(Reservation rsv) {
+		Optional<Integer> vacancyOpt = repo.findVacancyById(rsv.getAccId());
+		if (vacancyOpt.isEmpty())
+			return Optional.empty(); // throw Exception
+		Integer vacancy = vacancyOpt.get();
+		if (vacancy < rsv.getDays())
+			return Optional.empty(); // throw Exception
 
+		Optional<String> rsvIdOpt = repo.insertReservation(rsv);
+		
+		Integer balance = vacancy - rsv.getDays();
+		repo.updateVacancy(rsv.getAccId(), balance);
+		
+		return rsvIdOpt;
+
+	}
 
 }

@@ -11,7 +11,7 @@
     <title>Details</title>
 </head>
 <body>
-    <h1>Listings for <span data-th-text="${country}"></span></h1>
+    <h1>Listing details</h1>
     <a href="#" onclick="history.go(-1)">Back</a>
     <br />
     <br />
@@ -47,28 +47,33 @@
     </table>
 
     <h1>Bookings</h1>
-    <form action="/book" method="post">
+    <form data-th-action="@{/book}" method="post" data-th-object="${rsv}">
         <table>
-            <input type="hidden" name="id" data-th-value="${details.id}">
             <tr>
                 <td>Name:</td>
-                <td><input type="text" name="name"></td>
+                <td><input type="text" name="name" data-th-field="*{name}"></td>
             </tr>
             <tr>
                 <td>Email:</td>
-                <td><input type="text" name="email"></td>
+                <td><input type="text" name="email" data-th-field="*{email}"></td>
             </tr>
             <tr>
                 <td>Arrival:</td>
-                <td><input type="date" name="arrival"></td>
+                <td><input type="date" name="arrival" data-th-field="*{arrival}"></td>
             </tr>
             <tr>
                 <td>Stay:</td>
-                <td><input type="number" name="days"> days</td>
+                <td><input type="number" name="days" data-th-field="*{days}"> days
+                </td>
             </tr>
             <tr>
                 <td></td>
                 <td><input type="submit" value="Book"></td>
+            </tr>
+            <tr>
+                <div data-th-if="${#fields.hasGlobalErrors()}">
+                    <p data-th-each="err : ${#fields.globalErrors()}" data-th-text="${err}" class="error" style="color: red;">
+                </div>
             </tr>
         </table>
     </form>
