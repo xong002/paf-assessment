@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        table,
+        th,
+        td {
+          border: 1px solid black;
+        }
+      </style>
+    <title>Details</title>
+</head>
+<body>
+    <h1>Listings for <span data-th-text="${country}"></span></h1>
+    <a href="/">Back</a>
+    <br />
+    <br />
+    <br />
+    <table>
+        <tr>
+            <td>Id:</td>
+            <td data-th-text="${details.id}"></td>
+        </tr>
+        <tr>
+            <td>Description:</td>
+            <td>
+                <p data-th-text="${details.description}"></p>
+                <span><img data-th-src="${details.image}" alt="" height="200px" width="200px"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>Address:</td>
+            <td>
+                <p data-th-text="${details.street}"></p>
+                <p data-th-text="${details.suburb}"></p>
+                <p data-th-text="${details.country}"></p>
+            </td>
+        </tr>
+        <tr>
+            <td>Price:</td>
+            <td data-th-text="${details.price}"></td>
+        </tr>
+        <tr>
+            <td>Amenities:</td>
+            <td data-th-text="${details.amenities}"></td>
+        </tr>
+    </table>
+</body>
+</html>

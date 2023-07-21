@@ -6,7 +6,13 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.MongoExpression;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationExpression;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -51,7 +57,57 @@ public class ListingsRepository {
 	}	
 
 	//TODO: Task 4
-	
+	/* 	
+	db.listings.aggregate([
+	{
+		$match: { _id: "27498126"}
+	}
+	,{
+		$project: {
+			_id: 1,
+			description: 1,
+			"address.street": 1,
+			"address.suburb": 1,
+			"address.country": 1,
+			"images.picture_url": 1,
+			price: 1,
+			amenities: { 
+				$reduce: {
+				input: "$amenities",
+				initialValue: "",
+				in: { $concat : ["$$value", "$$this", ", "] }
+				}
+		}
+		}
+	}
+	]) 
+	*/
+	public List<Document> getListingDetails(String id){
+		MatchOperation matchOp = Aggregation.match(Criteria.where("_id").is(id));
+
+		ProjectionOperation projectOp = Aggregation.project("_id",
+		"description",
+		"address.street",
+		"address.suburb",
+		"address.country",
+		"images.picture_url",
+		"price")
+		.and(AggregationExpression.from(
+			MongoExpression.create("""
+					$reduce: {
+						input: "$amenities",
+						initialValue: "",
+						in: { $concat : ["$$value", "$$this", ", "] }
+					}
+					""")
+		)).as("amenities");
+
+		Aggregation pipeline = Aggregation.newAggregation(matchOp, projectOp);
+
+		AggregationResults<Document> aggregate = mongoTemplate.aggregate(pipeline, C_LISTINGS, Document.class);
+
+		return aggregate.getMappedResults();
+	}
 
 	//TODO: Task 5
 

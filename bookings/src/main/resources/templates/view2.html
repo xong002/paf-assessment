@@ -31,10 +31,18 @@
         <td data-th-text="${listing.price}"></td>
         <td data-th-text="${listing.address}"></td>
         <td>
-            <img data-th-src="${listing.image}" alt="" height="300px" width="300px">
+          <img
+            data-th-src="${listing.image}"
+            alt=""
+            height="300px"
+            width="300px"
+          />
         </td>
         <td>
-            <button>Details</button>
+          <form data-th-action="@{/details}">
+            <input type="hidden" data-th-value="${listing.id}" name="listingId" />
+            <button type="submit">Details</button>
+          </form>
         </td>
       </tr>
     </table>
